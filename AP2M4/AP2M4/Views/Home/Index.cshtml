@@ -1,0 +1,95 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+    <style>
+        html {
+            background: url("@Url.Content("~/Content/Images/background.jpg")") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        #title {
+            font-family: 'Roboto', sans-serif;
+            position: absolute;
+            width: 15em;
+            height: 1em;
+            left: 1em;
+            top: 1em;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 5em;
+            line-height: 1em;
+            color: #FFFFFF;
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        }
+
+        .textBox {
+            height: 76px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 4px solid rgba(0, 0, 0, 0.75);
+            border-radius: 12px;
+        }
+
+        ul {
+            position: absolute;
+            left: 6%;
+            top: 15em;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            font: 200 20px/1.5 Helvetica, Roboto, sans-serif;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #000;
+            display: block;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: bold;
+
+            -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+            -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+            -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+            -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+            transition: font-size 0.3s ease, background-color 0.3s ease;
+            text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        li a:hover {
+            font-size: 24px;
+            background: #f6f6f6;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div id="title">
+        Welcome to FlightGear radar!
+    </div>
+    <div>
+        <ul>
+            <li><a href="/display/127.0.0.1/5402">Display /display/127.0.0.1/5402</a></li>
+            <li><a href="/display/127.0.0.1/5402/4">Display with refresh /display/127.0.0.1/5402/4</a></li>
+            <li><a href="/save/127.0.0.1/5402/4/10/flight1">Save 4 times a second for 10 seconds in file flight1.json /save/127.0.0.1/5402/4/10/flight1</a></li>
+            <li><a href="/display/flight1/4">Display flight1.json /display/flight1/4</a></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

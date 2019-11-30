@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<style>
+    html {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+    body {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        /*create the class Point*/
+
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        /*initi global vars*/
+
+        var pointsArr = [new Point(50, 50)];
+        var timeForNextPoint = 4 * 1000;
+        var firstImageLoaded = false;
+        var secondImageLoaded = false;
+        var map_image = new Image();
+        map_image.onload = () => {
+            firstImageLoaded = true;
+            startDrawing();
+        }
+        map_image.src = '../resources/export-map-share.png';
+        var plane_image = new Image();
+        plane_image.onload = () => {
+            secondImageLoaded = true;
+            startDrawing();
+        }
+        plane_image.src = '../resources/airplane-shape.svg';
+        var backround_width = window.innerWidth;
+        var backround_hight = window.innerHeight;
+        /*usefull function:*/
+
+        function norm_point(point) {
+
+            point.x = ((point.x + 180) * (window.innerWidth / 360));
+            point.y = ((point.y + 90) * (window.innerHeight / 180));
+            return point;
+        }
+
+        for (i = 0; i < pointsArr.length; i++) {
+            pointsArr[i] = norm_point(pointsArr[i])
+        }
+
+
+        function setBackround(width, height) {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            context.canvas.width = width;
+            context.canvas.height = height;
+            backround_width = width;
+            backround_hight = height;
+
+        }
+
+        function start() {
+            setBackround(window.innerWidth, window.innerHeight);
+            drawBackround();
+        }
+
+        //TODO: chagne it to get the point from the server
+        function getNewPoint() {
+            newPoint(nextPointTest((x) => { return Math.log(-1 * x); }))
+        }
+
+        function drawGrape() {
+            if (pointsArr.length < 2) {
+                return;
+            }
+            var c = document.getElementById("canvas");
+            var ctx = c.getContext("2d");
+            var point = pointsArr[0];
+            ctx.strokeStyle = "#FF0000";
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            //draw red point
+            ctx.moveTo(point.x, point.y);
+            for (var i = 1; i < pointsArr.length; i++) {
+                point = pointsArr[i];
+                ctx.lineTo(point.x, point.y);
+            }
+            ctx.stroke();
+        }
+        function drawPlane() {
+            var plane_size = 30;
+            var new_x = pointsArr[pointsArr.length - 1].x;
+            var new_y = pointsArr[pointsArr.length - 1].y;
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            //draw image
+            context.drawImage(plane_image, new_x, new_y - plane_size / 2, plane_size, plane_size);
+        }
+        function drawPoint() {
+            if (pointsArr.length <= 0) {
+                return;
+            }
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            var new_x = pointsArr[0].x;
+            var new_y = pointsArr[0].y;
+            context.beginPath();
+            context.arc(new_x, new_y, 6, 0, 2 * Math.PI);
+            // context.stroke();
+            context.fillStyle = 'red';
+            context.fill();
+            context.fillStyle = 'black';
+            context.stroke();
+        }
+        // min and max included
+        function rndVal(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        function drawBackround() {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            // image part
+            context.drawImage(map_image, 0, 0, backround_width, backround_hight);
+            drawPoint();
+        }
+
+        function drawAll() {
+            drawBackround();
+            drawGrape();
+            drawPlane();
+        }
+
+        function newPoint(point) {
+            point = norm_point(point)
+            drawBackround();
+            pointsArr.push(point);
+            drawGrape();
+            drawPlane();
+
+
+        }
+
+        /*function for tests*/
+        function nextPointTest(func) {
+            //if(pointsArr.length == 0){
+            return new Point(rndVal(0, window.innerWidth), rndVal(0, window.innerHeight));
+            //}
+            var next_x = pointsArr[pointsArr.length - 1].x + 50
+            var next_y = func(next_x);
+            return new Point(next_x, next_y);
+
+        }
+
+        //script
+        let dpr = window.devicePixelRatio;
+        onresize = e => {
+            if (window.devicePixelRatio !== dpr) {
+                // setTimeout because zoooming will change the size of the iframe and thus trigger a new resize event
+                setTimeout(_ => dpr = window.devicePixelRatio, 20)
+            } else {
+                drawBackround();
+                drawGrape();
+                drawPlane();
+            }
+        };
+        function startDrawing() {
+            if (firstImageLoaded && secondImageLoaded) {
+                start();
+                drawPlane();
+            }
+        }
+        $(document).ready(function () {
+            // start();
+            // drawPlane();
+            if (timeForNextPoint >= 0) {
+                setInterval(getNewPoint, timeForNextPoint);
+            }
+        })
+    </script>
+</body>
+</html>

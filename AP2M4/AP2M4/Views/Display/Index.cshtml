@@ -1,0 +1,256 @@
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="~/Content/Scripts/jquery-3.4.1.min.js"></script>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Display - Index</title>
+</head>
+<style>
+    html {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        /*create the class Point*/
+
+        class Point {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+        }
+
+        /*drawBackround global vars*/
+
+        @{
+            if (@ViewBag.Response != null)
+            {
+                <text> var response = JSON.parse('@Html.Raw(@ViewBag.Response)'); </text>
+            }
+            else
+            {
+                <text> var response = undefined; </text>
+            }
+        }
+        var pointsArr = [];
+        var pointsFromFileArr;
+        var isFile = false;
+        @{
+            if (@ViewBag.RefreshRate != null)
+            {
+                <text>
+                    var timeForNextPoint = 1000 * @ViewBag.RefreshRate;
+                </text>
+            }
+            else
+            {
+                <text>
+                    var timeForNextPoint = -1;
+                </text>
+            }
+
+        }
+        var firstImageLoaded = false;
+        var secondImageLoaded = false;
+        var map_image = new Image();
+        map_image.onload = () => {
+            firstImageLoaded = true;
+            startDrawing();
+        }
+        map_image.src = "@Url.Content("~/Content/Images/export-map-share.png")";
+        var plane_image = new Image();
+        plane_image.onload = () => {
+            secondImageLoaded = true;
+            startDrawing();
+        }
+        plane_image.src = "@Url.Content("~/Content/Images/airplane-shape.svg")";
+        var backround_width = window.innerWidth;
+        var backround_hight = window.innerHeight;
+
+        /*usefull function:*/
+
+        function norm_point(point) {
+            point.x = ((point.x + 180) * (window.innerWidth / 360));
+            point.y = ((point.y * -1 + 90) * (window.innerHeight / 180));
+            return point;
+        }
+
+        function setBackround(width, height) {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            context.canvas.width = width;
+            context.canvas.height = height;
+            backround_width = width;
+            backround_hight = height;
+
+        }
+
+        function start() {
+            setBackround(window.innerWidth, window.innerHeight);
+            drawBackround();
+        }
+
+        //TODO: chagne it to get the point from the server
+        function getNewPoint() {
+            nextPointTest(newPoint);
+        }
+
+        function drawGrape() {
+            if (pointsArr.length < 2) {
+                return;
+            }
+            var c = document.getElementById("canvas");
+            var ctx = c.getContext("2d");
+            var point = pointsArr[0];
+            ctx.strokeStyle = "#FF0000";
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            //draw red point
+            ctx.moveTo(point.x, point.y);
+            for (var i = 1; i < pointsArr.length; i++) {
+                point = pointsArr[i];
+                ctx.lineTo(point.x, point.y);
+            }
+            ctx.stroke();
+        }
+
+        function drawPlane() {
+            var plane_size = 30;
+            var new_x = pointsArr[pointsArr.length - 1].x;
+            var new_y = pointsArr[pointsArr.length - 1].y;
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            //draw image
+            context.shadowOffsetX = 2;
+            context.shadowOffsetY = 2;
+            context.shadowColor = 'black';
+            context.shadowBlur = 5;
+            context.drawImage(plane_image, new_x, new_y - plane_size / 2, plane_size, plane_size);
+            context.shadowOffsetX = 0;
+            context.shadowOffsetY = 0;
+            context.shadowColor = 'black';
+            context.shadowBlur = 0;
+        }
+
+        function drawPoint() {
+            if (pointsArr.length <= 0) {
+                return;
+            }
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            var new_x = pointsArr[0].x;
+            var new_y = pointsArr[0].y;
+            context.beginPath();
+            context.arc(new_x, new_y, 6, 0, 2 * Math.PI);
+            // context.stroke();
+            context.fillStyle = 'red';
+            context.fill();
+            context.strokeStyle = 'black';
+            context.stroke();
+        }
+
+        // min and max included
+        function rndVal(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+        function drawBackround() {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            // image part
+            context.drawImage(map_image, 0, 0, backround_width, backround_hight);
+            drawPoint();
+        }
+
+        function drawAll() {
+            drawBackround();
+            drawGrape();
+            drawPlane();
+        }
+
+        function newPoint(point) {
+            pointsArr.push(point);
+            drawBackround();
+            drawGrape();
+            drawPlane();
+
+
+        }
+
+        /*function for tests*/
+        function nextPointTest(func) {
+
+            if (isFile) {
+                var point = pointsFromFileArr.shift();
+                if (point != undefined) {
+                    func(norm_point(new Point(point.Longitude, point.Latitude)));
+                }
+            } else if (pointsArr.length == 0) {
+                if (Array.isArray(response.points)) {
+                    pointsFromFileArr = response.points;
+                    isFile = true;
+                    var point = pointsFromFileArr.shift();
+                    if (point != undefined) {
+                        func(norm_point(new Point(point.Longitude, point.Latitude)));
+                    }
+                } else {
+                    func(norm_point(new Point(response.Longitude, response.Latitude)));
+                }
+            } else {
+
+                var link = "@Url.Content("~/getPoint/" + @ViewBag.IP + "/" + @ViewBag.PORT)";
+
+                $.post(link, function (data) {
+                    data = JSON.parse(data);
+                    func(norm_point(new Point(data.Longitude, data.Latitude)));
+                });
+            }
+        }
+
+        //script
+        let dpr = window.devicePixelRatio;
+        onresize = e => {
+            if (window.devicePixelRatio !== dpr) {
+                // setTimeout because zoooming will change the size of the iframe and thus trigger a new resize event
+                setTimeout(_ => dpr = window.devicePixelRatio, 20)
+            } else {
+                drawBackround();
+                drawGrape();
+                drawPlane();
+            }
+        };
+        function startDrawing() {
+            if (firstImageLoaded && secondImageLoaded) {
+                start();
+                getNewPoint();
+            }
+        }
+        $(document).ready(function () {
+            if (timeForNextPoint >= 0) {
+                setInterval(getNewPoint, timeForNextPoint);
+            }
+        })
+    </script>
+</body>
+</html>

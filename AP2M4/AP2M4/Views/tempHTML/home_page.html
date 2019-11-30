@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<style>
+    html {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        margin: 0px;
+        width: 100%;
+        height: 100%;
+    }
+
+    canvas {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<body>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+    <canvas id="canvas"></canvas>
+    <script>
+        /*drawBackround global vars*/
+
+        var backround_image = new Image();
+        backround_image.src = "@Url.Content("~/Content/Images / backround_homd_page.jpg")";
+        var welcom_text = "welcom to our web-app";
+        var backround_width = window.innerWidth;
+        var backround_hight = window.innerHeight;
+
+        /*usefull function:*/
+
+        function setBackround(width, height) {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            context.canvas.width = width;
+            context.canvas.height = height;
+            backround_width = width;
+            backround_hight = height;
+
+        }
+
+        function start() {
+            setBackround(window.innerWidth, window.innerHeight);
+            drawBackround();
+        }
+
+        function drawBackround() {
+            var can = document.getElementById('canvas');
+            var context = can.getContext('2d');
+            // image part
+            context.drawImage(backround_image, 0, 0, backround_width, backround_hight);
+            drawText(welcom_text, can.width / 2, can.height / 2);
+        }
+
+        function drawText(text, x, y) {
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            ctx.font = "30px Comic Sans MS";
+            ctx.fillStyle = "red";
+            ctx.textAlign = "center";
+            ctx.fillText(text, x, y);
+        }
+
+        function drawAll() {
+            drawBackround();
+        }
+
+
+
+        //script
+        let dpr = window.devicePixelRatio;
+        onresize = e => {
+            if (window.devicePixelRatio !== dpr) {
+                // setTimeout because zoooming will change the size of the iframe and thus trigger a new resize event
+                setTimeout(_ => dpr = window.devicePixelRatio, 20)
+            } else {
+                drawBackround();
+            }
+        };
+        start();
+        $(document).ready(function () {
+            start();
+        })
+    </script>
+</body>
+</html>
