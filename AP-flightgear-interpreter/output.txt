@@ -1,0 +1,23 @@
+commit c338c02695fb88dfd1590099f8202e05c3e9b642
+Author: Unknown <orsan.1997@gmail.com>
+Date:   Thu Dec 20 19:09:49 2018 +0200
+
+    Added socket threads to listen for data from FG
+
+commit 198a401f4f1f51210ab44dcb8760ca44d97dc188
+Author: Unknown <orsan.1997@gmail.com>
+Date:   Wed Dec 19 20:43:16 2018 +0200
+
+    Added inheritance to each class to its required interface usage.
+
+commit 5a50b0de7aabe959216191128577f55cea17ea26
+Author: Unknown <orsan.1997@gmail.com>
+Date:   Sun Dec 16 21:09:50 2018 +0200
+
+    Added most necessary classes. (not configured yet)
+
+commit 06663ecb22a93508284c412dab4d81c9cd3c3b38
+Author: Orsan Awwad <orsan.1997@gmail.com>
+Date:   Fri Dec 14 15:30:33 2018 +0200
+
+    Init commit, Init project

@@ -1,0 +1,43 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AP2M3.Views"
+             x:Class="AP2M3.Views.ManualControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800"
+             Background="White">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <!-- Custom built sliders for rudder and throttle to prevent clunky xaml -->
+        <local:FGSliderControl Grid.Column="1" Grid.Row="2" NameHolder="Rudder" SliderMinValue="-1" SliderMaxValue="1" SliderValue="{Binding RudderVM, Mode=OneWayToSource}"/>
+        <local:FGSliderControl Grid.Column="0" Grid.Row="1" NameHolder="Throttle" LTRFlag="True" SliderMinValue="0" SliderMaxValue="1" SliderValue="{Binding ThrottleVM, Mode=OneWayToSource}">
+            <local:FGSliderControl.LayoutTransform>
+                <RotateTransform Angle="90"/>
+            </local:FGSliderControl.LayoutTransform>
+        </local:FGSliderControl>
+        <!-- Generic Custom Name Value label with custom properties -->
+        <local:FGNameValue Grid.Column="2" Grid.Row="1" NameHolder="Elevator" ValueHolder="{Binding ElevatorVM, Mode=OneWay}">
+            <local:FGNameValue.LayoutTransform>
+                <RotateTransform CenterX="0.5" CenterY="0.5" Angle="90"/>
+            </local:FGNameValue.LayoutTransform>
+        </local:FGNameValue>
+        <local:FGNameValue x:Name="AileronValue"  Grid.Column="1" Grid.Row="0" NameHolder="Aileron" ValueHolder="{Binding AileronVM, Mode=OneWay}"/>
+        <!-- Main joystick part with custom properties binded to VM. -->
+        <local:Joystick x:Name="ManualJoystick" Grid.Column="1" Grid.Row="1" 
+                    Aileron="{Binding AileronVM, Mode=OneWayToSource}" 
+                    AileronStep="{Binding AileronStepVM, Mode=OneWayToSource}" 
+                    Elevator="{Binding ElevatorVM, Mode=OneWayToSource}"
+                    ElevatorStep="{Binding ElevatorStepVM, Mode=OneWayToSource}"/>
+    </Grid>
+</UserControl>

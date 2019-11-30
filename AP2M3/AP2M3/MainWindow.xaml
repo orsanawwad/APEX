@@ -1,0 +1,28 @@
+﻿<Window x:Class="AP2M3.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AP2M3"
+        xmlns:FG="clr-namespace:AP2M3.Views"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        Height="600" Width="1000"
+        MinHeight="600" MinWidth="1000" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.2*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+        <!-- Right view for controls -->
+        <FG:PlaneControlsPanel Grid.Row="1" Grid.Column="1"/>
+        <!-- Left view for monitoring data -->
+        <FG:FlightMonitoringPanel Grid.Row="1" Grid.Column="0"/>
+        <!-- Top view for software title -->
+        <Label Style="{StaticResource BoldyTitle}" Content="Flight Simulator Controller" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+    </Grid>
+</Window>
